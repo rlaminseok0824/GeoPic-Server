@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import UploadFile
+from fastapi import File, UploadFile
 from nest.core import Controller, Get, Post,Put, Delete
 
 from .articles_service import ArticlesService
@@ -36,9 +36,9 @@ class ArticlesController:
     async def delete_article(self, article_id: str):
         return await self.articles_service.delete_article(article_id)
     
-    @Post("/upload")
-    async def upload_image(self, file: UploadFile):
-        return await self.articles_service.upload_image(file)
+    @Post("/picture")
+    async def upload_image(self, pictures: List[UploadFile] = File(None)):
+        return await self.articles_service.upload_image(pictures)
     
     @Delete("/delete")
     async def delete_all(self):

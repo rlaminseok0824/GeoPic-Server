@@ -1,3 +1,4 @@
+from datetime import datetime
 from beanie import Document
                 
 from typing import List, Optional
@@ -7,11 +8,12 @@ class Articles(Document):
     username: str
     title: str
     content: str
-    image: Optional[str]
-    lat: float
-    lon: float
+    imageUrl: Optional[str]
+    latitude: float
+    longitude: float
     tags: Optional[List[str]]
     location: str
+    date: datetime
     
     class Config:
         schema_extra = {
@@ -23,6 +25,7 @@ class Articles(Document):
                 "lat": 123.456,
                 "lon": 789.012,
                 "tags": ["tag1", "tag2"],
-                "location": "Article Location"
+                "location": "Article Location",
+                "date" : "2022-01-01T00:00:00.000Z"
             }
         }

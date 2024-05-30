@@ -1,7 +1,8 @@
 import io
+from typing import List
 import uuid
 from beanie import PydanticObjectId
-from fastapi import UploadFile
+from fastapi import File, UploadFile
 from .articles_model import Articles,ArticleResponse
 from .articles_entity import Articles as ArticlesEntity
 from nest.core.decorators.database import db_request_handler
@@ -13,6 +14,7 @@ import boto3
 class ArticlesService:
     @db_request_handler
     async def add_articles(self, articles: Articles):
+        print(articles.dict())
         new_articles = ArticlesEntity(
             **articles.dict()
         )        
@@ -54,9 +56,15 @@ class ArticlesService:
         return await ArticlesEntity.update(article_id, articles.dict())
     
     @db_request_handler
-    async def upload_image(self, file: UploadFile):
-        s3 = _s3_connect()
-        return await upload_file(s3,file)
+    async def upload_image(self, pictures: List[UploadFile] = File(None)):
+        if pictures:
+            contents_list = []
+            for picture in pictures:
+                contents = await picture.read()
+                contents_list.append(contents)
+            image_urls = upload_images_to_s3(pictures, contents_list)   
+
+        return {"urls": image_urls}
 
 def _s3_connect() -> boto3.client:
     session = boto3.Session(profile_name='default')
@@ -64,13 +72,30 @@ def _s3_connect() -> boto3.client:
 
     return s3
 
-async def upload_file(s3: boto3.client, file: UploadFile) -> str:
-    file_content = await file.read()
+def upload_images_to_s3(
+    files: List[UploadFile],
+    contents_list: List[bytes],
+) -> List[str]:
+    s3 = _s3_connect()
+    imageUrls = []
+    try:
+        for idx, file in enumerate(files):
+            image_name = str(uuid.uuid4()) + "." + file.content_type.split("/")[1]
 
-    fileobj = io.BytesIO(file_content)
-
-    img_name = str(uuid.uuid4()) + "." + file.content_type.split("/")[1]
-
-    s3.upload_fileobj(fileobj, 'fullstack-be-repo', img_name)
-
-    return "https://{0}.s3.ap-northeast-2.amazonaws.com/{1}".format('fullstack-be-repo', img_name)
+            # image_name = file.filename
+            s3.put_object(
+                Bucket='fullstack-be-repo',
+                Body=contents_list[idx],
+                Key=image_name,
+                ContentType=file.content_type,
+            )
+            imageUrls.append(
+                "https://{0}.s3.ap-northeast-2.amazonaws.com/".format(
+                    'fullstack-be-repo'
+                )
+                + image_name
+            )
+    except Exception as e:
+        print(e)
+        return []
+    return imageUrls
