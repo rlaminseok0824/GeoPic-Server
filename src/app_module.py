@@ -1,11 +1,13 @@
 from nest.core import PyNestFactory, Module
+
+from src.geocodes.geocodes_moudle import GeoModule
 from .config import config
 from .app_controller import AppController
 from .app_service import AppService
 from src.articles.articles_module import ArticlesModule
 
 
-@Module(imports=[ArticlesModule], controllers=[AppController], providers=[AppService])
+@Module(imports=[ArticlesModule, GeoModule], controllers=[AppController], providers=[AppService])
 class AppModule:
     pass
 
