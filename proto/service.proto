@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package proto;
+
+message Request {
+}
+
+message TrackLocalResponse {
+    repeated string trackIds =1;
+}
+
+service GetTrackLocalService {
+    rpc GetTrackLocal(Request) returns (TrackLocalResponse);
+}
