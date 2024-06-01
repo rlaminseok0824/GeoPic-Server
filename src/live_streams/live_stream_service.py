@@ -14,10 +14,12 @@ class LiveStreamService:
         grpc = GrpcClient()
         grpc_response = grpc.get_trackLocals()
         
-        if not grpc_response:
+        if not grpc_response or not grpc_response.get("trackIds"):
             return []
-        grpc_ids = {str(response.id) for response in grpc_response}
 
+        # Extract ids from grpc_response
+        grpc_ids = {str(id) for id in grpc_response["trackIds"]}
+    
         live_streams = await LiveStreamEntity.find_all().to_list()
 
         filtered_live_streams = [
