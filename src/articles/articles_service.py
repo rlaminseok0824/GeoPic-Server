@@ -35,14 +35,27 @@ class ArticlesService:
     
     @db_request_handler
     async def get_article_by_position(self, lat: float, lon: float):
-        return await ArticlesEntity.find(
+        await ArticlesEntity.find(
         {
             "$and": [
-                {"lat": {"$gte": lat - 50, "$lte": lat + 50}},
-                {"lon": {"$gte": lon - 50, "$lte": lon + 50}}
+                {"latitude": {"$gte": lat - 50, "$lte": lat + 50}},
+                {"longitude": {"$gte": lon - 50, "$lte": lon + 50}}
             ]
         }
     ).to_list()
+        return [
+            ArticleResponse(
+                id=str(article.id),
+                **article.dict(exclude={"id"})
+            )
+            for article in await ArticlesEntity.find(
+                {
+                    "$and": [
+                        {"latitude": {"$gte": lat - 50, "$lte": lat + 50}},
+                        {"longitude": {"$gte": lon - 50, "$lte": lon + 50}}
+                    ]
+                }).to_list()
+        ]
 
     @db_request_handler
     async def delete_article(self, article_id: str):
