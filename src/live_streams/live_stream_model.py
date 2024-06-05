@@ -7,7 +7,7 @@ class LiveStream(BaseModel):
     username: str
     title: str
     content: str = ""
-    videoId: Optional[str]
+    videoID: Optional[str]
     latitude: float
     longitude: float
     tags: Optional[List[str]]

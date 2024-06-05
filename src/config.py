@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from nest.core.database.odm_provider import OdmProvider
 from src.articles.articles_entity import Articles
+from src.live_streams.live_streams_entity import LiveStreams
 
 load_dotenv()
 config = OdmProvider(
@@ -12,5 +13,5 @@ config = OdmProvider(
         "password": os.getenv("DB_PASSWORD", "root"),
         "port": os.getenv("DB_PORT", 27017),
     },
-    document_models=[Articles],
+    document_models=[Articles,LiveStreams],
 )

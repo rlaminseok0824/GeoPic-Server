@@ -23,7 +23,7 @@ class LiveStreamService:
         live_streams = await LiveStreamEntity.find_all().to_list()
 
         filtered_live_streams = [
-            live_stream for live_stream in live_streams if str(live_stream.id) in grpc_ids
+            live_stream for live_stream in live_streams if str(live_stream.videoID) in grpc_ids
         ]
 
         return [
