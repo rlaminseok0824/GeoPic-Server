@@ -32,12 +32,8 @@ poetry install
 poetry run uvicorn "src.app_module:http_server" --host "0.0.0.0" --port "8000" --reload
 ```
 
-## 5. Run the app
-- Now you can run the app
-``` bash
-flutter run
-```
-
+## 3. Send requests
+Go to the fastapi docs and use your api endpoints - http://0.0.0.0/docs
 
 # Project Structure
   - Use MVC Pattern
