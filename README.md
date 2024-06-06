@@ -29,7 +29,7 @@ poetry install
 ```
 ## 2. Run Service using poetry
 ``` bash
-
+poetry run uvicorn "src.app_module:http_server" --host "0.0.0.0" --port "8000" --reload
 ```
 
 ## 5. Run the app
