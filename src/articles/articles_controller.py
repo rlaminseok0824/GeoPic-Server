@@ -28,8 +28,8 @@ class ArticlesController:
     async def get_articles_by_position(self, lat: float, lon: float):
         return await self.articles_service.get_article_by_position(lat, lon)
     
-    @Put("/<article_id>")
-    async def update_article(self, article_id: str, articles: Articles):
+    @Put("/{article_id}")
+    async def update_article(self,article_id: str ,articles: Articles):
         return await self.articles_service.update_article(article_id, articles)
     
     @Delete("/<article_id>")

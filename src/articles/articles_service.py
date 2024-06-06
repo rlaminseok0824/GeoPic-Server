@@ -65,7 +65,9 @@ class ArticlesService:
     
     @db_request_handler
     async def update_article(self, article_id: str, articles: Articles):
-        return await ArticlesEntity.update(article_id, articles.dict())
+        update = await ArticlesEntity.get(article_id)
+        update.update(**articles.dict(exclude={"id"}))
+        return ArticleResponse(id=str(update.id), **articles.dict(exclude={"id"}))
     
     @db_request_handler
     async def upload_image(self, pictures: List[UploadFile] = File(None)):
